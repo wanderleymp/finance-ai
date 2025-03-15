@@ -30,6 +30,7 @@ export class InitializationService implements OnModuleInit {
     try {
       await this.inicializarAcoes();
       await this.inicializarModulos();
+      await this.inicializarTenantEAdmin(); // Nova chamada para inicializar tenant e admin
       
       this.logger.log('Inicialização de dados do sistema concluída com sucesso!');
     } catch (error) {
@@ -72,6 +73,88 @@ export class InitializationService implements OnModuleInit {
   /**
    * Inicializa os módulos, submódulos e recursos padrão do sistema
    */
+  /**
+   * Inicializa o tenant license e usuário super admin padrão
+   */
+  private async inicializarTenantEAdmin() {
+    const prisma = this.databaseProvider.getContext();
+    
+    try {
+      // Criando o tenant padrão (license)
+      const tenantLicense = await prisma.tenant.upsert({
+        where: { dominio: 'license.finance-ai.com' },
+        update: {},
+        create: {
+          nome: 'Finance AI License',
+          dominio: 'license.finance-ai.com',
+          ativo: true
+        }
+      });
+      
+      this.logger.log(`Tenant License inicializado: ${tenantLicense.id}`);
+      
+      // Importando bcrypt para criptografia da senha
+      const bcrypt = require('bcrypt');
+      
+      // Criando o usuário super admin
+      const senhaCriptografada = await bcrypt.hash('SuperAdmin@2025', 10);
+      
+      const superAdmin = await prisma.usuario.upsert({
+        where: { email: 'admin@finance-ai.com' },
+        update: {},
+        create: {
+          nome: 'Super Administrador',
+          email: 'admin@finance-ai.com',
+          senha: senhaCriptografada,
+          tipo: 'SUPER_ADMIN',
+          ativo: true,
+          tenantId: tenantLicense.id
+        }
+      });
+      
+      this.logger.log(`Super Admin inicializado: ${superAdmin.id}`);
+      
+      // Criando uma empresa padrão para o tenant license
+      const empresaPadrao = await prisma.empresa.upsert({
+        where: { 
+          cnpj: '00000000000000' 
+        },
+        update: {},
+        create: {
+          nome: 'Finance AI Administração',
+          cnpj: '00000000000000',
+          ativa: true,
+          tenantId: tenantLicense.id
+        }
+      });
+      
+      this.logger.log(`Empresa padrão inicializada: ${empresaPadrao.id}`);
+      
+      // Vinculando o super admin à empresa padrão
+      const usuarioEmpresa = await prisma.usuarioEmpresa.upsert({
+        where: {
+          usuarioId_empresaId: {
+            usuarioId: superAdmin.id,
+            empresaId: empresaPadrao.id
+          }
+        },
+        update: {},
+        create: {
+          usuarioId: superAdmin.id,
+          empresaId: empresaPadrao.id,
+          principal: true
+        }
+      });
+      
+      this.logger.log(`Usuário vinculado à empresa: ${usuarioEmpresa.id}`);
+      this.logger.log('Tenant license e super admin inicializados com sucesso!');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+      this.logger.error(`Erro ao inicializar tenant e admin: ${errorMessage}`);
+      throw error;
+    }
+  }
+
   private async inicializarModulos() {
     // Módulos padrão do sistema
     const modulosPadrao = [
