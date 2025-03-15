@@ -22,7 +22,7 @@
     "test:setup": "./scripts/setup-test-db.sh",
     "test:run": "./scripts/run-tests.sh",
     "postinstall": "prisma generate --schema=./prisma/schema.prisma",
-    "kill-port": "fuser -k 3000/tcp",
+    "kill-port": "# npm run kill-port-3000",
     "kill-port-3000": "kill -9 $(lsof -t -i:3000)"
   },
   "dependencies": {
