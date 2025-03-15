@@ -1,0 +1,86 @@
+/* Estilos para os botões de registro */
+
+.btn-register-hero,
+.btn-register-cta,
+.btn-register-header {
+  background-color: #ff6b00; /* Cor laranja vibrante para chamar atenção */
+  border-color: #ff6b00;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(255, 107, 0, 0.3);
+}
+
+.btn-register-hero:hover,
+.btn-register-cta:hover,
+.btn-register-header:hover {
+  background-color: #ff8c3f;
+  border-color: #ff8c3f;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(255, 107, 0, 0.4);
+}
+
+.btn-register-hero:active,
+.btn-register-cta:active,
+.btn-register-header:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(255, 107, 0, 0.2);
+}
+
+/* Efeito de destaque pulsante para o botão de registro no header */
+.btn-register-header {
+  animation: pulse 2s infinite;
+}
+
+/* Efeito de destaque pulsante para o botão de registro na seção hero */
+.btn-register-hero {
+  font-size: 1.2rem;
+  padding: 12px 24px;
+}
+
+/* Efeito de destaque pulsante para o botão de registro na seção CTA */
+.btn-register-cta {
+  font-size: 1.2rem;
+  padding: 12px 24px;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 107, 0, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 107, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 107, 0, 0);
+  }
+}
+
+/* Adiciona um pequeno ícone de seta para indicar ação */
+.btn-register-hero::after,
+.btn-register-cta::after,
+.btn-register-header::after {
+  content: " →";
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateX(-5px);
+  display: inline-block;
+}
+
+.btn-register-hero:hover::after,
+.btn-register-cta:hover::after,
+.btn-register-header:hover::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+  .btn-register-hero,
+  .btn-register-cta {
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
+}

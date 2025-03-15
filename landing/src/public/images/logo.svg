@@ -1,0 +1,39 @@
+<svg width="240" height="80" viewBox="0 0 240 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradientes -->
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0056B3" />
+      <stop offset="100%" stop-color="#007BFF" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#17A2B8" />
+      <stop offset="100%" stop-color="#B3D7FF" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Fundo hexagonal para simbolizar blockchain/tecnologia -->
+  <polygon points="40,15 65,15 80,35 65,55 40,55 25,35" 
+           fill="#F8F9FA" stroke="url(#logoGradient)" stroke-width="1" />
+  
+  <!-- Símbolo F estilizado com linha de gráfico integrada -->
+  <path d="M40,25 L65,25 M40,25 L40,45 M40,35 L55,35" 
+        stroke="url(#logoGradient)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  
+  <!-- Linha de gráfico ascendente representando crescimento financeiro -->
+  <path d="M40,45 L45,38 L50,42 L55,35 L60,30 L65,25" 
+        stroke="url(#accentGradient)" stroke-width="4" fill="none" stroke-linecap="round" filter="url(#glow)" />
+  
+  <!-- Círculos representando pontos de dados/IA -->
+  <circle cx="45" cy="38" r="3" fill="#17A2B8" />
+  <circle cx="50" cy="42" r="3" fill="#17A2B8" />
+  <circle cx="55" cy="35" r="3" fill="#17A2B8" />
+  <circle cx="60" cy="30" r="3" fill="#17A2B8" />
+  <circle cx="65" cy="25" r="3" fill="#17A2B8" />
+  
+  <!-- Texto "Finance AI" -->
+  <text x="95" y="43" font-family="Montserrat, sans-serif" font-size="28" font-weight="700" fill="#0056B3">Finance AI</text>
+</svg>

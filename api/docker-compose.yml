@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://saasadmin:saaspassword@db:5432/saas?schema=public
+      - REDIS_URL=redis://:your_secure_password_here@redis:6379
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15-alpine
+    container_name: saas-postgres
+    environment:
+      POSTGRES_USER: saasadmin
+      POSTGRES_PASSWORD: saaspassword
+      POSTGRES_DB: saas
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: saas-redis
+    ports:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=your_secure_password_here
+    command: ["redis-server", "--requirepass your_secure_password_here"]
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
