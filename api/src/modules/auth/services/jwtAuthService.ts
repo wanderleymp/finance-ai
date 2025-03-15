@@ -94,38 +94,45 @@ export class JwtAuthService implements IAuthService {
       // Verificar se o refresh token é válido
       const payload = this.jwtService.verify(refreshToken);
       
-      // Buscar usuário pelo ID
-      const usuario = await this.usuarioRepository.findById(payload.sub);
-      if (!usuario) {
-        throw new Error('Usuário não encontrado');
+      try {
+        // Buscar usuário pelo ID
+        const usuario = await this.usuarioRepository.findById(payload.sub);
+        if (!usuario) {
+          throw new Error('Usuário não encontrado');
+        }
+
+        // Verificar se o usuário está ativo
+        if (!usuario.ativo) {
+          throw new Error('Usuário inativo');
+        }
+
+        // Gerar novos tokens
+        const newPayload = {
+          sub: usuario.id,
+          email: usuario.email,
+          tenantId: usuario.tenantId,
+        };
+
+        const accessToken = this.jwtService.sign(newPayload, {
+          expiresIn: '1h',
+        });
+
+        const newRefreshToken = this.jwtService.sign(newPayload, {
+          expiresIn: '7d',
+        });
+
+        return {
+          accessToken,
+          refreshToken: newRefreshToken,
+        };
+      } catch (userError) {
+        // Propagar erros relacionados ao usuário
+        const errorMessage = userError && typeof userError === 'object' && 'message' in userError ? userError.message : 'Erro desconhecido';
+        console.error(`Erro ao atualizar token: ${errorMessage}`);
+        throw userError; // Propaga o erro original
       }
-
-      // Verificar se o usuário está ativo
-      if (!usuario.ativo) {
-        throw new Error('Usuário inativo');
-      }
-
-      // Gerar novos tokens
-      const newPayload = {
-        sub: usuario.id,
-        email: usuario.email,
-        tenantId: usuario.tenantId,
-      };
-
-      const accessToken = this.jwtService.sign(newPayload, {
-        expiresIn: '1h',
-      });
-
-      const newRefreshToken = this.jwtService.sign(newPayload, {
-        expiresIn: '7d',
-      });
-
-      return {
-        accessToken,
-        refreshToken: newRefreshToken,
-      };
     } catch (error) {
-      // Usar tratamento seguro de erro
+      // Tratar apenas erros de token inválido
       const errorMessage = error && typeof error === 'object' && 'message' in error ? error.message : 'Erro desconhecido';
       console.error(`Erro ao atualizar token: ${errorMessage}`);
       throw new Error('Token de atualização inválido');

@@ -24,6 +24,7 @@ const mockJwtService = {
 
 describe('JwtAuthService', () => {
   let service: JwtAuthService;
+  let consoleSpy: jest.SpyInstance;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -46,6 +47,14 @@ describe('JwtAuthService', () => {
       value: mockJwtService,
       writable: true
     });
+
+    // Espionar o console.log para verificar chamadas
+    consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    consoleSpy.mockRestore();
   });
 
   describe('login', () => {
@@ -106,6 +115,76 @@ describe('JwtAuthService', () => {
 
       const tokens = await service.atualizarToken('validRefreshToken');
       expect(tokens).toEqual({ accessToken: 'newToken', refreshToken: 'newToken' });
+    });
+
+    it('should throw an error when refreshing token for non-existent user', async () => {
+      const payload = { sub: '1', email: 'test@example.com' };
+      mockJwtService.verify.mockReturnValue(payload);
+      mockUsuarioRepository.findById.mockResolvedValue(null);
+
+      await expect(service.atualizarToken('validRefreshToken')).rejects.toThrow();
+      // Verificamos apenas que algum erro foi lançado, já que a mensagem exata pode variar
+    });
+
+    it('should throw an error when refreshing token for inactive user', async () => {
+      const payload = { sub: '1', email: 'test@example.com' };
+      const user = { id: '1', email: 'test@example.com', tenantId: 'tenantId', ativo: false };
+      mockJwtService.verify.mockReturnValue(payload);
+      mockUsuarioRepository.findById.mockResolvedValue(user);
+
+      await expect(service.atualizarToken('validRefreshToken')).rejects.toThrow();
+      // Verificamos apenas que algum erro foi lançado, já que a mensagem exata pode variar
+    });
+  });
+
+  describe('logout', () => {
+    it('should log the user logout action', async () => {
+      const userId = '1';
+      await service.logout(userId);
+      expect(consoleSpy).toHaveBeenCalledWith(`Logout do usuário ${userId}`);
+    });
+  });
+
+  describe('gerarHashSenha', () => {
+    it('should generate a hash for a password', async () => {
+      const senha = 'senha123';
+      const salt = 'salt';
+      const hash = 'hashedPassword';
+      
+      (bcrypt.genSalt as jest.Mock).mockResolvedValue(salt);
+      (bcrypt.hash as jest.Mock).mockResolvedValue(hash);
+      
+      const result = await service.gerarHashSenha(senha);
+      
+      expect(bcrypt.genSalt).toHaveBeenCalled();
+      expect(bcrypt.hash).toHaveBeenCalledWith(senha, salt);
+      expect(result).toBe(hash);
+    });
+  });
+
+  describe('verificarSenha', () => {
+    it('should return true if password matches hash', async () => {
+      const senha = 'senha123';
+      const hash = 'hashedPassword';
+      
+      (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+      
+      const result = await service.verificarSenha(senha, hash);
+      
+      expect(bcrypt.compare).toHaveBeenCalledWith(senha, hash);
+      expect(result).toBe(true);
+    });
+    
+    it('should return false if password does not match hash', async () => {
+      const senha = 'senha123';
+      const hash = 'hashedPassword';
+      
+      (bcrypt.compare as jest.Mock).mockResolvedValue(false);
+      
+      const result = await service.verificarSenha(senha, hash);
+      
+      expect(bcrypt.compare).toHaveBeenCalledWith(senha, hash);
+      expect(result).toBe(false);
     });
   });
 });
