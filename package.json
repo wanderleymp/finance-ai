@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "npm run kill-ports && turbo run dev",
+    "kill-ports": "npx kill-port 3000 3001 3002 3003 3004 3005",
     "lint": "turbo run lint",
     "clean": "turbo run clean && rm -rf node_modules",
     "test": "jest"

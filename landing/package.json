@@ -2,9 +2,10 @@
   "name": "landing",
   "version": "1.0.0",
   "main": "src/index.tsx",
+  "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "ts-node -P tsconfig-node.json src/index.tsx",
+    "dev": "node --loader ts-node/esm -r ts-node/register src/index.tsx",
     "lint": "eslint ."
   },
   "devDependencies": {
@@ -13,8 +14,10 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "@types/express": "^5.0.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "express": "^5.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   }

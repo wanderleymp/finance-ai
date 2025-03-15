@@ -6,7 +6,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "incremental": true,
+    "tsBuildInfoFile": "./tsbuildinfo.json"
   },
   "include": ["api/**/*.ts", "app/**/*.ts", "packages/**/*.ts", "jest.config.js"]
 }
