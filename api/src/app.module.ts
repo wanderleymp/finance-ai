@@ -42,9 +42,9 @@ export class AppModule {
    * @param consumer Consumidor de middlewares
    */
   configure(consumer: MiddlewareConsumer) {
-    // Aplicar o middleware de tenant para todas as rotas
     consumer
       .apply(TenantMiddleware)
+      .exclude({ path: 'api/register', method: RequestMethod.POST })
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }

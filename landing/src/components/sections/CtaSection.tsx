@@ -19,6 +19,9 @@ const CtaSection: React.FC = () => {
             <a href="/register" className="btn btn-primary btn-lg btn-register-cta">
               Registre aqui
             </a>
+            <a href="/login" className="btn btn-secondary btn-lg">
+              Entrar
+            </a>
             <a href="/contato" className="btn btn-secondary btn-lg">
               Fale com um Consultor
             </a>

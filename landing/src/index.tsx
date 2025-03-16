@@ -18,6 +18,12 @@ const publicPath = path.join(__dirname, 'public');
 // Servir arquivos estáticos da pasta public
 app.use(express.static(publicPath));
 
+// Adicionando cabeçalhos CSP para permitir fontes e estilos externos
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy", "default-src 'self'; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com");
+  next();
+});
+
 // Rota principal que renderiza a landing page
 app.get('/', (req, res) => {
   // Envia o HTML da landing page
@@ -50,7 +56,8 @@ app.get('/', (req, res) => {
                 <li><a href="#faq">FAQ</a></li>
               </ul>
             </nav>
-            <button class="btn">Entrar</button>
+            <a href="/login" class="btn">Entrar</a>
+            <a href="/register" class="btn btn-primary">Registre aqui</a>
             <button class="mobile-menu-btn">
               <i class="fas fa-bars"></i>
             </button>
@@ -356,6 +363,26 @@ app.get('/', (req, res) => {
         </div>
       </footer>
 
+      <script>
+        // Script para controlar o menu mobile
+        document.addEventListener('DOMContentLoaded', function() {
+          const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+          const navContainer = document.querySelector('.nav-container');
+          const navLinks = document.querySelectorAll('.nav-links a, .nav-container a.btn');
+          
+          // Abrir/fechar menu quando o botão é clicado
+          mobileMenuBtn.addEventListener('click', function() {
+            navContainer.classList.toggle('mobile-open');
+          });
+          
+          // Fechar menu quando um link é clicado
+          navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+              navContainer.classList.remove('mobile-open');
+            });
+          });
+        });
+      </script>
       <script src="/script.js"></script>
     </body>
     </html>

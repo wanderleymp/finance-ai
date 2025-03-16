@@ -20,9 +20,9 @@ const useIntersectionObserver = <T extends Element>({
   threshold = 0.1,
   rootMargin = '0px',
   root = null
-}: UseIntersectionObserverOptions = {}): [RefObject<T>, boolean] => {
+}: UseIntersectionObserverOptions = {}): [RefObject<T | null>, boolean] => {
   // Referência para o elemento que será observado
-  const elementRef = useRef<T>(null);
+  const elementRef = useRef<T | null>(null);
   
   // Estado para controlar se o elemento está visível
   const [isVisible, setIsVisible] = useState(false);

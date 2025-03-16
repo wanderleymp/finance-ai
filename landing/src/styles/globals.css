@@ -181,6 +181,15 @@ a:hover {
   align-items: center;
 }
 
+/* Estilos para os botões de navegação desktop */
+.desktop-nav-buttons {
+  display: flex;
+  gap: var(--espacamento-md);
+  align-items: center;
+  margin-left: auto;
+  margin-right: var(--espacamento-lg);
+}
+
 .logo {
   height: 40px;
 }
@@ -206,6 +215,7 @@ a:hover {
 .nav-buttons {
   display: flex;
   gap: var(--espacamento-md);
+  align-items: center;
 }
 
 .mobile-menu-toggle {
@@ -704,6 +714,33 @@ a:hover {
   color: rgba(255, 255, 255, 0.7);
 }
 
+/* Classes utilitárias para exibição responsiva */
+.d-none {
+  display: none !important;
+}
+
+.d-block {
+  display: block !important;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+@media (min-width: 768px) {
+  .d-md-none {
+    display: none !important;
+  }
+  
+  .d-md-block {
+    display: block !important;
+  }
+  
+  .d-md-flex {
+    display: flex !important;
+  }
+}
+
 /* Media Queries */
 @media (max-width: 992px) {
   h1 {
@@ -798,6 +835,13 @@ a:hover {
   .nav-buttons {
     flex-direction: column;
     margin-top: var(--espacamento-xl);
+    width: 100%;
+  }
+  
+  .nav-buttons a {
+    width: 100%;
+    margin-bottom: var(--espacamento-sm);
+    text-align: center;
   }
   
   .hero-cta {
